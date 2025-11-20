@@ -17,7 +17,6 @@
 package huckle.maven
 
 import cats.syntax.all.*
-import fs2.data.xml.dom.DocumentBuilder
 
 final case class MavenCoordinates(
     groupId: String,
