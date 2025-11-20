@@ -7,16 +7,16 @@ ThisBuild / startYear := Some(2023)
 
 ThisBuild / tlSonatypeUseLegacyHost := false
 
-ThisBuild / crossScalaVersions := Seq("3.2.2")
+ThisBuild / crossScalaVersions := Seq("3.3.7")
 
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
 ThisBuild / tlJdkRelease := Some(8)
 
-val CatsEffectVersion = "3.4.7"
-val Fs2Version = "3.6.1"
-val Http4sVersion = "0.23.18"
+val CatsEffectVersion = "3.6.3"
+val Fs2Version = "3.12.2"
+val Http4sVersion = "0.23.33"
 val Fs2DataVersion = "1.6.1"
-val Http4sFs2DataVersion = "0.1.0"
+val Http4sFs2DataVersion = "0.4.0"
 
 ThisBuild / scalacOptions ++= Seq("-new-syntax", "-indent", "-source:future")
 
