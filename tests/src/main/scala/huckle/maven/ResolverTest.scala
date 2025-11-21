@@ -17,6 +17,7 @@
 package huckle
 package maven
 
+import cats.syntax.all.*
 import cats.effect.IO
 import cats.effect.Resource
 import fs2.io.file.Files
@@ -39,5 +40,22 @@ object ResolverTest:
       resolver.resolve(MavenCoordinates("org.typelevel", "cats-core_3", "2.9.0")).void
     }
 
-    resolveCats
+    val parseDependencies = Test("parse Cats v2.9.0 dependencies") {
+      resolver.resolve(MavenCoordinates("org.typelevel", "cats-core_3", "2.9.0")).map {
+        (project, _) =>
+          val expected = List(
+            MavenDependency(MavenCoordinates("org.typelevel", "cats-kernel_3", "2.9.0")),
+            MavenDependency(MavenCoordinates("org.scala-lang", "scala3-library_3", "3.2.1")),
+            MavenDependency(MavenCoordinates("org.scalacheck", "scalacheck_3", "1.17.0")),
+            MavenDependency(MavenCoordinates("org.scalameta", "munit_3", "1.0.0-M6")),
+            MavenDependency(MavenCoordinates("org.typelevel", "discipline-munit_3", "2.0.0-M3")),
+          )
+          project.dependencies == expected
+      }
+    }
+
+    List(
+      resolveCats,
+      parseDependencies,
+    ).combineAll
   }

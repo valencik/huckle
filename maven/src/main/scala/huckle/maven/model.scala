@@ -42,7 +42,8 @@ final case class MavenProject(
 object MavenProject:
   def fromXml(node: xml.Document): Either[Throwable, MavenProject] =
     val coordinates = MavenCoordinates.fromXml(node)
-    val dependencies = (node \ "dependencies").toList.traverse(MavenDependency.fromXml(_))
+    val dependencies =
+      (node \ "dependencies" \ "dependency").toList.traverse(MavenDependency.fromXml(_))
     (coordinates, dependencies).mapN(MavenProject(_, _))
 
 final case class MavenDependency(
