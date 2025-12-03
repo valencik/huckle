@@ -54,22 +54,15 @@ object MavenResolver:
       Files[F].exists(path)
 
     def resolve(repos: NonEmptyList[Uri]): F[Option[Uri]] =
-      val race = repos
+      repos
         .map { repo =>
           val uri = toUri(repo) / getFileName("pom")
           client
             .successful(Request(Method.HEAD, uri))
-            .ifM(
-              F.pure(repo),
-              F.canceled *> F.never,
-            )
-            .handleErrorWith(_ => F.canceled *> F.never)
+            .map(success => if success then Some(repo) else None)
+            .handleErrorWith(_ => F.pure(None))
         }
-        .reduce(_.race(_).map(_.merge))
-
-      race.background.use { oc =>
-        oc.flatMap(_.fold(F.pure(None), F.raiseError(_), _.map(Some(_))))
-      }
+        .reduce(utils.raceOption(_, _))
 
     def downloadMavenProject(repository: Uri): F[Unit] =
       val path = cache / toPath
